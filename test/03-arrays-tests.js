@@ -8,6 +8,7 @@ describe('03-arrays-tasks', () => {
       {
         arr: ['Ace', 10, true],
         value: 10,
+        // eslint-disable-next-line linebreak-style
         expected: 1,
       }, {
         arr: ['Array', 'Number', 'string'],

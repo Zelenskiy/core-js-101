@@ -20,8 +20,12 @@
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  return {
+    width,
+    height,
+    getArea: () => width * height,
+  };
 }
 
 
@@ -35,8 +39,8 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
+function getJSON(obj) {
+  return JSON.stringify(obj);
 }
 
 
@@ -51,8 +55,11 @@ function getJSON(/* obj */) {
  *    const r = fromJSON(Circle.prototype, '{"radius":10}');
  *
  */
-function fromJSON(/* proto, json */) {
-  throw new Error('Not implemented');
+function fromJSON(proto, json) {
+  const obj = JSON.parse(json);
+  const instance = Object.create(proto);
+  Object.assign(instance, obj);
+  return instance;
 }
 
 
@@ -110,33 +117,120 @@ function fromJSON(/* proto, json */) {
  *  For more examples see unit tests.
  */
 
+class CSSSelectorBuilder {
+  constructor() {
+    this.elements = [];
+    this.ids = [];
+    this.classes = [];
+    this.attrs = [];
+    this.pseudoClasses = [];
+    this.pseudoElements = [];
+  }
+
+  element(value) {
+    const cssSelectorBuilder = new CSSSelectorBuilder();
+    cssSelectorBuilder.elements = [...this.elements, value];
+    return cssSelectorBuilder;
+  }
+
+  id(value) {
+    const cssSelectorBuilder = new CSSSelectorBuilder();
+    cssSelectorBuilder.ids = [...this.ids, value];
+    return cssSelectorBuilder;
+  }
+
+  class(value) {
+    const cssSelectorBuilder = new CSSSelectorBuilder();
+    cssSelectorBuilder.classes = [...this.classes, value];
+    return cssSelectorBuilder;
+  }
+
+  attr(value) {
+    const cssSelectorBuilder = new CSSSelectorBuilder();
+    cssSelectorBuilder.attrs = [...this.attrs, value];
+    return cssSelectorBuilder;
+  }
+
+  pseudoClass(value) {
+    const cssSelectorBuilder = new CSSSelectorBuilder();
+    cssSelectorBuilder.pseudoClasses = [...this.pseudoClasses, value];
+    return cssSelectorBuilder;
+  }
+
+  pseudoElement(value) {
+    const cssSelectorBuilder = new CSSSelectorBuilder();
+    cssSelectorBuilder.pseudoElements = [...this.pseudoElements, value];
+    return cssSelectorBuilder;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  combine(selector1, combinator, selector2) {
+    const cssSelectorBuilder = new CSSSelectorBuilder();
+    cssSelectorBuilder.selectors = [...selector1.selectors, combinator, ...selector2.selectors];
+    return cssSelectorBuilder;
+  }
+
+  stringify() {
+    // eslint-disable-next-line object-curly-newline
+    const { elements, ids, classes, attrs, pseudoClasses, pseudoElements } = this;
+
+    let selector = '';
+
+    if (elements.length > 0) {
+      selector += elements.join('');
+    }
+
+    if (ids.length > 0) {
+      selector += `#${ids.join('#')}`;
+    }
+
+    if (classes.length > 0) {
+      selector += `.${classes.join('.')}`;
+    }
+
+    if (attrs.length > 0) {
+      selector += attrs.join('');
+    }
+
+    if (pseudoClasses.length > 0) {
+      selector += `:${pseudoClasses.join(':')}`;
+    }
+
+    if (pseudoElements.length > 0) {
+      selector += `::${pseudoElements.join('::')}`;
+    }
+
+    return selector;
+  }
+}
+
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    return new CSSSelectorBuilder().element(value);
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    return new CSSSelectorBuilder().id(value);
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    return new CSSSelectorBuilder().class(value);
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    return new CSSSelectorBuilder().attr(value);
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    return new CSSSelectorBuilder().pseudoClass(value);
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    return new CSSSelectorBuilder().pseudoElement(value);
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    return new CSSSelectorBuilder().combine(selector1, combinator, selector2);
   },
 };
 
